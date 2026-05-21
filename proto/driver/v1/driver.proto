@@ -1,0 +1,159 @@
+syntax = "proto3";
+
+package driver.v1;
+
+option go_package = "github.com/jetkzu/jetkzu/gen/go/driver/v1;driverv1";
+
+import "google/protobuf/timestamp.proto";
+
+service DriverService {
+  rpc RegisterDriver(RegisterDriverRequest) returns (RegisterDriverResponse);
+  rpc AddVehicle(AddVehicleRequest) returns (AddVehicleResponse);
+  rpc UpdateVehicle(UpdateVehicleRequest) returns (UpdateVehicleResponse);
+  rpc DeleteVehicle(DeleteVehicleRequest) returns (DeleteVehicleResponse);
+  rpc UpdateDriverStatus(UpdateDriverStatusRequest) returns (UpdateDriverStatusResponse);
+  rpc UpdateDriverLocation(UpdateDriverLocationRequest) returns (UpdateDriverLocationResponse);
+  rpc GetDriverLocation(GetDriverLocationRequest) returns (GetDriverLocationResponse);
+  rpc FindNearestDrivers(FindNearestDriversRequest) returns (FindNearestDriversResponse);
+  rpc ListDrivers(ListDriversRequest) returns (ListDriversResponse);
+  rpc ListAvailableDrivers(ListAvailableDriversRequest) returns (ListAvailableDriversResponse);
+  rpc AssignDriverToRide(AssignDriverToRideRequest) returns (AssignDriverToRideResponse);
+  rpc GetDriver(GetDriverRequest) returns (GetDriverResponse);
+  rpc GetDriverStatusHistory(GetDriverStatusHistoryRequest) returns (GetDriverStatusHistoryResponse);
+  rpc SetDriverRating(SetDriverRatingRequest) returns (SetDriverRatingResponse);
+}
+
+message Driver {
+  string id = 1;
+  string user_id = 2;
+  string license_number = 3;
+  string status = 4; // online | offline | busy
+  double latitude = 5;
+  double longitude = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message Vehicle {
+  string id = 1;
+  string driver_id = 2;
+  string plate_number = 3;
+  string make = 4;
+  string model = 5;
+  int32 year = 6;
+  string color = 7;
+}
+
+message NearbyDriver {
+  string driver_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  double distance_km = 4;
+}
+
+message DriverStatusHistory {
+  string driver_id = 1;
+  string status = 2;
+  google.protobuf.Timestamp changed_at = 3;
+}
+
+message RegisterDriverRequest {
+  string user_id = 1;
+  string license_number = 2;
+}
+message RegisterDriverResponse { Driver driver = 1; }
+
+message AddVehicleRequest {
+  string driver_id = 1;
+  string plate_number = 2;
+  string make = 3;
+  string model = 4;
+  int32 year = 5;
+  string color = 6;
+}
+message AddVehicleResponse { Vehicle vehicle = 1; }
+
+message UpdateVehicleRequest {
+  string vehicle_id = 1;
+  string plate_number = 2;
+  string make = 3;
+  string model = 4;
+  int32 year = 5;
+  string color = 6;
+}
+message UpdateVehicleResponse { Vehicle vehicle = 1; }
+
+message DeleteVehicleRequest { string vehicle_id = 1; }
+message DeleteVehicleResponse { bool deleted = 1; }
+
+message UpdateDriverStatusRequest {
+  string driver_id = 1;
+  string status = 2;
+}
+message UpdateDriverStatusResponse { Driver driver = 1; }
+
+message UpdateDriverLocationRequest {
+  string driver_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+}
+message UpdateDriverLocationResponse { bool ok = 1; }
+
+message GetDriverLocationRequest { string driver_id = 1; }
+message GetDriverLocationResponse {
+  string driver_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+}
+
+message FindNearestDriversRequest {
+  double latitude = 1;
+  double longitude = 2;
+  double radius_km = 3;
+  int32 limit = 4;
+}
+message FindNearestDriversResponse {
+  repeated NearbyDriver drivers = 1;
+}
+
+message ListDriversRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+  string status = 3;
+}
+message ListDriversResponse { repeated Driver drivers = 1; }
+
+message ListAvailableDriversRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+message ListAvailableDriversResponse { repeated Driver drivers = 1; }
+
+message AssignDriverToRideRequest {
+  string ride_id = 1;
+  double pickup_latitude = 2;
+  double pickup_longitude = 3;
+}
+message AssignDriverToRideResponse {
+  string driver_id = 1;
+  bool assigned = 2;
+}
+
+message GetDriverRequest { string driver_id = 1; }
+message GetDriverResponse { Driver driver = 1; Vehicle vehicle = 2; }
+
+message GetDriverStatusHistoryRequest {
+  string driver_id = 1;
+  int32 limit = 2;
+}
+message GetDriverStatusHistoryResponse {
+  repeated DriverStatusHistory history = 1;
+}
+
+message SetDriverRatingRequest {
+  string driver_id = 1;
+  double rating = 2;
+}
+message SetDriverRatingResponse {
+  string driver_id = 1;
+  double rating = 2;
+}
