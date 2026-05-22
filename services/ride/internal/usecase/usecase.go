@@ -32,6 +32,16 @@ type CreateRideInput struct {
 }
 
 func (uc *UseCase) Create(ctx context.Context, in CreateRideInput) (*domain.Ride, error) {
+	existing, err := uc.repo.ListByUser(ctx, in.PassengerID, 100, 0)
+	if err != nil {
+		return nil, err
+	}
+	for _, ride := range existing {
+		if domain.IsActiveStatus(ride.Status) {
+			return nil, domain.ErrActiveRideExists
+		}
+	}
+
 	price, dist := domain.EstimatePrice(in.PickupLat, in.PickupLng, in.DropoffLat, in.DropoffLng)
 	ride := &domain.Ride{
 		ID:          uuid.NewString(),

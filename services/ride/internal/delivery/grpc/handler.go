@@ -37,6 +37,9 @@ func (h *Handler) CreateRide(ctx context.Context, req *ridev1.CreateRideRequest)
 		DropoffLat: req.DropoffLat, DropoffLng: req.DropoffLng,
 	})
 	if err != nil {
+		if err == domain.ErrActiveRideExists {
+			return nil, status.Error(codes.FailedPrecondition, err.Error())
+		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	return &ridev1.CreateRideResponse{Ride: toPB(r)}, nil

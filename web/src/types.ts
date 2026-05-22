@@ -1,20 +1,19 @@
 import type { ApiResult } from "./api";
 
-export type AppRoute = "landing" | "login" | "dashboard";
-
 export type User = {
   id: string;
   email: string;
-  full_name?: string;
+  full_name: string;
   phone?: string;
-  role?: string;
+  role: string;
 };
 
+export type AppRole = "passenger" | "driver";
+
 export type Session = {
-  user?: User;
   access_token?: string;
-  refresh_token?: string;
-  expires_at?: string;
+  user?: User;
+  app_role?: AppRole;
 };
 
 export type ActivityItem = {
@@ -22,6 +21,8 @@ export type ActivityItem = {
   label: string;
   result: ApiResult;
 };
+
+export type AppRoute = "landing" | "login" | "dashboard";
 
 export type PageProps = {
   token: string;

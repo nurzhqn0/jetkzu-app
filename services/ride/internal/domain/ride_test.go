@@ -42,3 +42,15 @@ func TestRideStatusTransitions(t *testing.T) {
 		}
 	}
 }
+
+func TestIsActiveStatus(t *testing.T) {
+	active := []string{StatusRequested, StatusDriverAssigned, StatusDriverArrived, StatusInProgress}
+	for _, status := range active {
+		if !IsActiveStatus(status) {
+			t.Fatalf("%s should be active", status)
+		}
+	}
+	if IsActiveStatus(StatusCompleted) || IsActiveStatus(StatusCancelled) {
+		t.Fatal("finished rides must not be active")
+	}
+}

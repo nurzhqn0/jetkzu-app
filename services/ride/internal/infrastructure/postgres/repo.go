@@ -48,7 +48,7 @@ func (r *Repo) CreateWithHistory(ctx context.Context, ride *domain.Ride) error {
 
 func (r *Repo) GetByID(ctx context.Context, id string) (*domain.Ride, error) {
 	return r.queryOne(ctx, `SELECT id, passenger_id, COALESCE(driver_id::text,''), pickup_lat, pickup_lng,
-		dropoff_lat, dropoff_lng, status, price, created_at, updated_at FROM rides WHERE id=$1`, id)
+		dropoff_lat, dropoff_lng, status, price, created_at, updated_at FROM rides WHERE id::text=$1`, id)
 }
 
 func (r *Repo) ListByUser(ctx context.Context, userID string, limit, offset int) ([]*domain.Ride, error) {
@@ -58,7 +58,7 @@ func (r *Repo) ListByUser(ctx context.Context, userID string, limit, offset int)
 	rows, err := r.pool.Query(ctx, `
 		SELECT id, passenger_id, COALESCE(driver_id::text,''), pickup_lat, pickup_lng,
 		    dropoff_lat, dropoff_lng, status, price, created_at, updated_at
-		FROM rides WHERE passenger_id=$1 OR driver_id::text=$1
+		FROM rides WHERE passenger_id::text=$1 OR driver_id::text=$1
 		ORDER BY created_at DESC LIMIT $2 OFFSET $3`, userID, limit, offset)
 	if err != nil {
 		return nil, err
@@ -127,7 +127,7 @@ func (r *Repo) ListHistory(ctx context.Context, rideID string, limit int) ([]dom
 	}
 	rows, err := r.pool.Query(ctx, `
 		SELECT ride_id::text,status,reason,changed_at FROM ride_status_history
-		WHERE ride_id=$1 ORDER BY changed_at DESC LIMIT $2`, rideID, limit)
+		WHERE ride_id::text=$1 ORDER BY changed_at DESC LIMIT $2`, rideID, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +166,7 @@ func (r *Repo) UpdateStatusWithHistory(ctx context.Context, id, newStatus, reaso
 	defer func() { _ = tx.Rollback(ctx) }()
 
 	var current string
-	if err := tx.QueryRow(ctx, `SELECT status FROM rides WHERE id=$1 FOR UPDATE`, id).Scan(&current); err != nil {
+	if err := tx.QueryRow(ctx, `SELECT status FROM rides WHERE id::text=$1 FOR UPDATE`, id).Scan(&current); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, domain.ErrRideNotFound
 		}
@@ -176,7 +176,7 @@ func (r *Repo) UpdateStatusWithHistory(ctx context.Context, id, newStatus, reaso
 		return nil, domain.ErrInvalidTransition
 	}
 	now := time.Now().UTC()
-	if _, err := tx.Exec(ctx, `UPDATE rides SET status=$1, updated_at=$2 WHERE id=$3`, newStatus, now, id); err != nil {
+	if _, err := tx.Exec(ctx, `UPDATE rides SET status=$1, updated_at=$2 WHERE id::text=$3`, newStatus, now, id); err != nil {
 		return nil, err
 	}
 	if _, err := tx.Exec(ctx, `
@@ -198,7 +198,7 @@ func (r *Repo) AssignDriver(ctx context.Context, rideID, driverID string) (*doma
 	defer func() { _ = tx.Rollback(ctx) }()
 
 	var current string
-	if err := tx.QueryRow(ctx, `SELECT status FROM rides WHERE id=$1 FOR UPDATE`, rideID).Scan(&current); err != nil {
+	if err := tx.QueryRow(ctx, `SELECT status FROM rides WHERE id::text=$1 FOR UPDATE`, rideID).Scan(&current); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, domain.ErrRideNotFound
 		}
@@ -208,7 +208,7 @@ func (r *Repo) AssignDriver(ctx context.Context, rideID, driverID string) (*doma
 		return nil, domain.ErrInvalidTransition
 	}
 	now := time.Now().UTC()
-	if _, err := tx.Exec(ctx, `UPDATE rides SET driver_id=$1, status=$2, updated_at=$3 WHERE id=$4`,
+	if _, err := tx.Exec(ctx, `UPDATE rides SET driver_id=$1, status=$2, updated_at=$3 WHERE id::text=$4`,
 		driverID, domain.StatusDriverAssigned, now, rideID); err != nil {
 		return nil, err
 	}

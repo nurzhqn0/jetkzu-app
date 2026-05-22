@@ -1,81 +1,78 @@
-import { ArrowRight, CarProfile, CreditCard, ShieldCheck } from "@phosphor-icons/react";
+import { Bell, CarProfile, CreditCard, MapPinArea, NavigationArrow, ShieldCheck } from "@phosphor-icons/react";
 import type { Session } from "../types";
+import { StatusBadge, Surface } from "../components/ui";
 
 export function LandingPage({ session }: { session: Session }) {
-  const href = session.user ? "/dashboard" : "/login";
-  const label = session.user ? "Open dashboard" : "Start riding";
+  const dashboardHref = session.user ? "/dashboard" : "/login";
 
   return (
     <div className="landingLayout">
       <section className="hero reveal">
-        <div>
-          <span className="statusBadge warning">Kazakhstan taxi ops</span>
-          <h2>One dashboard for rides, drivers, payments, and receipts.</h2>
+        <div className="heroCopy">
+          <StatusBadge tone="warning">Astana taxi</StatusBadge>
+          <h2>Book a car, follow the route, keep the receipt.</h2>
           <p>
-            JetKZu connects passenger booking, driver availability, trip status, payment capture,
-            and notification history through a single local microservice stack.
+            JetKZu is a compact taxi product for city rides. Choose pickup and dropoff points, request a driver, pay after the trip, and keep ride messages in your account.
           </p>
           <div className="heroActions">
-            <a className="buttonLink" href={href}>
-              <ArrowRight weight="bold" />
-              <span>{label}</span>
-            </a>
-            <a className="buttonLink secondaryButton" href="/dashboard">
-              <CarProfile weight="bold" />
-              <span>View trip tools</span>
-            </a>
+            <a className="buttonLink" href={dashboardHref}>Request a ride</a>
+            <a className="buttonLink secondaryButton" href="/login">Login</a>
           </div>
         </div>
 
-        <div className="heroArtifact productPhone" aria-hidden="true">
+        <div className="heroArtifact productPhone" aria-label="Ride booking preview">
           <div className="phoneTop">
-            <strong>JetKZu Dispatch</strong>
-            <span>Live route</span>
+            <span>Current ride</span>
+            <strong>7 min</strong>
           </div>
-          <div className="dispatchMap">
-            <span className="mapLine" />
+          <div className="rideMap">
             <span className="mapNode pickup" />
             <span className="mapNode driver" />
             <span className="mapNode dropoff" />
+            <div className="mapLine" />
           </div>
-          <div className="dispatchPanel">
-            <strong>Kabanbay Batyr Ave to Expo district</strong>
-            <span>Driver assigned after passenger confirmation.</span>
+          <div className="rideSummary">
+            <div>
+              <span>Pickup</span>
+              <strong>Kabanbay Batyr Ave</strong>
+            </div>
+            <div>
+              <span>Dropoff</span>
+              <strong>Expo business district</strong>
+            </div>
+            <div className="fareLine">
+              <span>Estimated fare</span>
+              <strong>820.40 KZT</strong>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="platformGrid">
-        <article className="surface">
-          <div className="surfaceHeader">
-            <CarProfile weight="bold" />
-            <div>
-              <span>Driver supply</span>
-              <h2>Profiles and live status</h2>
-            </div>
-          </div>
-          <p className="muted">Register drivers, set availability, and publish locations from the dashboard.</p>
-        </article>
-        <article className="surface">
-          <div className="surfaceHeader">
-            <CreditCard weight="bold" />
-            <div>
-              <span>Payments</span>
-              <h2>Charge and receipt flow</h2>
-            </div>
-          </div>
-          <p className="muted">Create payments, process a card charge, and open receipts for completed trips.</p>
-        </article>
-        <article className="surface">
-          <div className="surfaceHeader">
-            <ShieldCheck weight="bold" />
-            <div>
-              <span>Operations</span>
-              <h2>Health and metrics</h2>
-            </div>
-          </div>
-          <p className="muted">Gateway health, Prometheus scraping, and activity history stay visible locally.</p>
-        </article>
+      <section className="customerGrid">
+        <Surface title="Ride booking" eyebrow="Passenger" icon={<MapPinArea weight="bold" />}>
+          <p className="muted">Set route details, estimate the fare, and request a nearby driver from your account.</p>
+        </Surface>
+        <Surface title="Driver matching" eyebrow="Dispatch" icon={<CarProfile weight="bold" />}>
+          <p className="muted">Drivers publish availability and location so the trip can move from request to pickup.</p>
+        </Surface>
+        <Surface title="Card payments" eyebrow="Billing" icon={<CreditCard weight="bold" />}>
+          <p className="muted">Create payment, process the trip amount, and open the receipt after the ride.</p>
+        </Surface>
+        <Surface title="Ride messages" eyebrow="Inbox" icon={<Bell weight="bold" />}>
+          <p className="muted">Receive ride updates and keep read history inside the dashboard.</p>
+        </Surface>
+      </section>
+
+      <section className="trustBand reveal">
+        <div>
+          <ShieldCheck weight="bold" />
+          <strong>Dashboard access is private.</strong>
+          <p>Everyone can view this landing page. Ride history, payments, and notifications are available only after login.</p>
+        </div>
+        <a className="buttonLink secondaryButton" href={dashboardHref}>
+          <NavigationArrow weight="bold" />
+          <span>{session.user ? "Open dashboard" : "Continue to login"}</span>
+        </a>
       </section>
     </div>
   );

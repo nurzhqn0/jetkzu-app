@@ -14,16 +14,16 @@ const routeFromPath = (path: string): AppRoute => {
 
 const routeMeta: Record<AppRoute, { title: string; description: string }> = {
   landing: {
-    title: "Taxi rides without the phone calls",
-    description: "Book a ride, follow the assigned driver, pay by card, and keep receipts in one simple JetKZu account."
+    title: "JetKZu такси в браузере",
+    description: "Клиент заказывает поездку, таксист принимает заказ, статусы и оплата проходят в одном понятном сценарии."
   },
   login: {
-    title: "Login or create account",
-    description: "Use your passenger account to book rides and manage payments."
+    title: "Вход по телефону",
+    description: "Укажите имя, номер и роль: клиент или таксист. Остальные технические данные JetKZu заполнит сам."
   },
   dashboard: {
-    title: "Your JetKZu dashboard",
-    description: "Choose a route, request a driver, pay for the trip, and review ride updates."
+    title: "Рабочий экран JetKZu",
+    description: "Без ручного ввода ID: только маршрут, заказ, принятие поездки, статусы и демо-оплата."
   }
 };
 

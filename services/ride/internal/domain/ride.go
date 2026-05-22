@@ -19,6 +19,7 @@ var (
 	ErrRideNotFound      = errors.New("ride not found")
 	ErrInvalidTransition = errors.New("invalid status transition")
 	ErrRideAlreadyDone   = errors.New("ride already finished")
+	ErrActiveRideExists  = errors.New("passenger already has an active ride")
 )
 
 type Ride struct {
@@ -59,6 +60,15 @@ func CanTransition(from, to string) bool {
 	}
 	_, ok = allowed[to]
 	return ok
+}
+
+func IsActiveStatus(status string) bool {
+	switch status {
+	case StatusRequested, StatusDriverAssigned, StatusDriverArrived, StatusInProgress:
+		return true
+	default:
+		return false
+	}
 }
 
 // EstimatePrice computes a deterministic mock price using haversine distance.

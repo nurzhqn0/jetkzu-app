@@ -1,6 +1,6 @@
 import { Gauge, House, Pulse, SignIn, SignOut, SquaresFour } from "@phosphor-icons/react";
 import type { CSSProperties, ReactNode } from "react";
-import logoUrl from "../assets/jetkzu-logo.svg";
+import logoUrl from "../assets/jetkzu-logo.png";
 import type { ActivityItem, AppRoute, Session } from "../types";
 
 type ProductShellProps = {
@@ -25,13 +25,15 @@ export function ProductShell({ route, title, description, session, activity, onL
   return (
     <main className={route === "dashboard" ? "appShell" : "siteShell"}>
       <header className="siteHeader">
+        <a className="brand" href="/" aria-label="JetKZu platform home">
           <span className="brandLogo">
-            <img
-              src={logoUrl}
-              alt="JetKZu Taxi logo"
-
-            />
+            <img src={logoUrl} alt="JetKZu Taxi logo" />
           </span>
+          <span>
+            <strong>JetKZu</strong>
+            <span>Taxi platform</span>
+          </span>
+        </a>
 
         <nav className="topNav" aria-label="Primary navigation">
           {visibleNavItems.map((item) => (
@@ -62,7 +64,7 @@ export function ProductShell({ route, title, description, session, activity, onL
           </div>
           <div className="sessionBadge">
             <Gauge weight="bold" />
-            <span>{session.user?.email ?? "Public view"}</span>
+          <span>{session.user ? `${session.user.full_name} · ${session.app_role === "driver" ? "Таксист" : "Клиент"}` : "Гость"}</span>
           </div>
         </div>
 
@@ -78,13 +80,13 @@ function ActivityLog({ activity }: { activity: ActivityItem[] }) {
   return (
     <section className="activityLog reveal" aria-label="Recent activity">
       <div className="sectionHeader">
-        <strong>Trip timeline</strong>
-        <span>{activity.length ? "Latest product actions" : "No ride activity yet"}</span>
+        <strong>Лента действий</strong>
+        <span>{activity.length ? "Последние ответы системы" : "Пока действий нет"}</span>
       </div>
       {activity.length === 0 ? (
         <div className="emptyState">
           <Pulse weight="bold" />
-          <p>Estimate a ride, request a driver, charge a payment, or open the inbox to start the timeline.</p>
+          <p>Создайте заказ, примите поездку, смените статус или проведите оплату, чтобы увидеть историю.</p>
         </div>
       ) : (
         <div className="activityList">
@@ -92,7 +94,7 @@ function ActivityLog({ activity }: { activity: ActivityItem[] }) {
             <article key={item.id} className={item.result.ok ? "activityItem success" : "activityItem error"} style={{ "--index": index } as CSSProperties}>
               <div>
                 <strong>{item.label}</strong>
-                <span>{item.result.ok ? "Done" : "Needs attention"}</span>
+                <span>{item.result.ok ? "Готово" : "Нужно внимание"}</span>
               </div>
               <p>{messageFromBody(item.result.body, item.result.ok)}</p>
             </article>
@@ -109,5 +111,5 @@ function messageFromBody(body: unknown, ok: boolean) {
     const message = data.message ?? data.error ?? data.status;
     if (typeof message === "string" && message.trim()) return message;
   }
-  return ok ? "The action was accepted by JetKZu." : "The backend returned an error for this action.";
+  return ok ? "JetKZu принял действие." : "Backend вернул ошибку для этого действия.";
 }
