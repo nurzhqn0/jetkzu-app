@@ -196,6 +196,7 @@ SMTP_FROM=your@gmail.com
 
 * [`docs/architecture.md`](docs/architecture.md)
 * [`docs/api-examples.md`](docs/api-examples.md)
+* [`docs/vps-deploy.md`](docs/vps-deploy.md)
 * [`docs/grading-checklist.md`](docs/grading-checklist.md)
 * [`docs/demo-script.md`](docs/demo-script.md)
 * [`docs/github-commit-plan.md`](docs/github-commit-plan.md)

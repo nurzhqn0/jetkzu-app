@@ -1,6 +1,7 @@
 SHELL := /bin/bash
+VPS_ENV ?= .env.vps
 
-.PHONY: proto build test web-test docker-up docker-up-build docker-down docker-logs migrate-up migrate-down demo curl-demo
+.PHONY: proto build test web-test docker-up docker-up-build docker-down docker-logs vps-up vps-down vps-logs vps-ps migrate-up migrate-down demo curl-demo
 
 proto: ## Regenerate protobuf stubs (uses Docker, no local protoc needed)
 	./scripts/gen-proto.sh
@@ -19,6 +20,18 @@ docker-down: ## Stop the entire stack and remove volumes
 
 docker-logs: ## Tail logs from every service
 	docker compose logs -f --tail=200
+
+vps-up: ## Build and start the VPS stack using .env.vps
+	docker compose --env-file $(VPS_ENV) -f docker-compose.vps.yml up -d --build
+
+vps-down: ## Stop the VPS stack
+	docker compose --env-file $(VPS_ENV) -f docker-compose.vps.yml down
+
+vps-logs: ## Tail logs from the VPS stack
+	docker compose --env-file $(VPS_ENV) -f docker-compose.vps.yml logs -f --tail=200
+
+vps-ps: ## Show VPS stack service status
+	docker compose --env-file $(VPS_ENV) -f docker-compose.vps.yml ps
 
 migrate-up: ## Apply all migrations against running Postgres
 	docker compose run --rm migrate /bin/sh -c '\
