@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-label="JetKZu Taxi logo">
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="8" dy="12" stdDeviation="8" flood-color="#000000" flood-opacity="0.22"/>
+    </filter>
+    <filter id="typeShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="5" dy="8" stdDeviation="4" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(62 58)">
+    <circle cx="78" cy="286" r="38" fill="#ffde55"/>
+    <circle cx="168" cy="202" r="52" fill="#ffde55"/>
+    <circle cx="318" cy="292" r="74" fill="#ffde55"/>
+
+    <path
+      fill="#ffde55"
+      d="M398 174
+         C500 72 658 38 818 66
+         C922 84 1010 132 1070 200
+         C1136 195 1193 214 1228 255
+         C1278 315 1248 410 1171 444
+         C1091 479 993 453 945 394
+         C850 428 689 433 552 406
+         C455 387 374 343 350 277
+         C338 244 329 230 304 227
+         C279 224 249 242 244 223
+         C236 191 281 174 314 172
+         C340 170 366 160 398 174Z"
+      transform="translate(-20 0)"
+    />
+
+    <g filter="url(#softShadow)">
+      <path
+        fill="#171717"
+        d="M470 118h116v170
+           c0 96-69 155-154 155
+           c-88 0-151-59-151-147v-34h116v31
+           c0 26 15 44 37 44
+           c23 0 36-17 36-45V118Z"
+      />
+      <text
+        x="610"
+        y="255"
+        fill="#171717"
+        font-family="Arial Black, Impact, sans-serif"
+        font-size="126"
+        font-weight="900"
+        letter-spacing="-8"
+      >et</text>
+      <path
+        fill="#171717"
+        d="M926 262h91
+           c54 0 96 42 96 94
+           c0 52-42 94-96 94h-91v-76h90
+           c12 0 21-8 21-19s-9-18-21-18h-90v-75Z"
+      />
+    </g>
+
+    <g filter="url(#typeShadow)">
+      <path
+        fill="#ffffff"
+        d="M602 284h50v52l43-52h65l-56 66 60 92h-66l-42-67-4 5v62h-50V284Z"
+      />
+      <path
+        fill="#ffffff"
+        d="M771 284h123v44l-52 70h52v44H765v-42l55-72h-49v-44Z"
+      />
+    </g>
+
+    <g transform="translate(989 246) rotate(16)">
+      <text
+        fill="#171717"
+        font-family="Arial Black, Impact, sans-serif"
+        font-size="34"
+        font-weight="900"
+        letter-spacing="11"
+      >
+        <tspan x="-4" y="0">TAXI</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

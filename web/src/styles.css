@@ -71,22 +71,11 @@ a {
   text-decoration: none;
 }
 
-.brandLogo {
-  display: grid;
-  width: 88px;
-  height: 58px;
-  place-items: center;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--paper);
-}
-
 .brandLogo img {
   display: block;
-  width: 126px;
-  height: 126px;
+  width: 100px;
   object-fit: contain;
+  align-items: center;
 }
 
 .brand strong,
@@ -977,7 +966,8 @@ input[aria-invalid="true"] {
   }
 
   .brandLogo {
-    width: 76px;
+    width: 500px;
+    height: auto;
   }
 
   .metricGrid {
