@@ -1,0 +1,144 @@
+syntax = "proto3";
+
+package ride.v1;
+
+option go_package = "github.com/jetkzu/jetkzu/gen/go/ride/v1;ridev1";
+
+import "google/protobuf/timestamp.proto";
+
+service RideService {
+  rpc CreateRide(CreateRideRequest) returns (CreateRideResponse);
+  rpc EstimateRidePrice(EstimateRidePriceRequest) returns (EstimateRidePriceResponse);
+  rpc GetRide(GetRideRequest) returns (GetRideResponse);
+  rpc ListUserRides(ListUserRidesRequest) returns (ListUserRidesResponse);
+  rpc ListActiveRides(ListActiveRidesRequest) returns (ListActiveRidesResponse);
+  rpc ListDriverRides(ListDriverRidesRequest) returns (ListDriverRidesResponse);
+  rpc GetRideHistory(GetRideHistoryRequest) returns (GetRideHistoryResponse);
+  rpc ScheduleRide(ScheduleRideRequest) returns (ScheduleRideResponse);
+  rpc AcceptRide(AcceptRideRequest) returns (AcceptRideResponse);
+  rpc RejectRide(RejectRideRequest) returns (RejectRideResponse);
+  rpc UpdateRideStatus(UpdateRideStatusRequest) returns (UpdateRideStatusResponse);
+  rpc CancelRide(CancelRideRequest) returns (CancelRideResponse);
+  rpc CompleteRide(CompleteRideRequest) returns (CompleteRideResponse);
+  rpc RateRide(RateRideRequest) returns (RateRideResponse);
+}
+
+message Ride {
+  string id = 1;
+  string passenger_id = 2;
+  string driver_id = 3;
+  double pickup_lat = 4;
+  double pickup_lng = 5;
+  double dropoff_lat = 6;
+  double dropoff_lng = 7;
+  string status = 8;
+  double price = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+message RideStatusHistory {
+  string ride_id = 1;
+  string status = 2;
+  string reason = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+message CreateRideRequest {
+  string passenger_id = 1;
+  double pickup_lat = 2;
+  double pickup_lng = 3;
+  double dropoff_lat = 4;
+  double dropoff_lng = 5;
+}
+message CreateRideResponse { Ride ride = 1; }
+
+message EstimateRidePriceRequest {
+  double pickup_lat = 1;
+  double pickup_lng = 2;
+  double dropoff_lat = 3;
+  double dropoff_lng = 4;
+}
+message EstimateRidePriceResponse {
+  double price = 1;
+  double distance_km = 2;
+}
+
+message GetRideRequest { string ride_id = 1; }
+message GetRideResponse { Ride ride = 1; }
+
+message ListUserRidesRequest {
+  string user_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+message ListUserRidesResponse { repeated Ride rides = 1; }
+
+message ListActiveRidesRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+message ListActiveRidesResponse { repeated Ride rides = 1; }
+
+message ListDriverRidesRequest {
+  string driver_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+message ListDriverRidesResponse { repeated Ride rides = 1; }
+
+message GetRideHistoryRequest {
+  string ride_id = 1;
+  int32 limit = 2;
+}
+message GetRideHistoryResponse { repeated RideStatusHistory history = 1; }
+
+message ScheduleRideRequest {
+  string passenger_id = 1;
+  double pickup_lat = 2;
+  double pickup_lng = 3;
+  double dropoff_lat = 4;
+  double dropoff_lng = 5;
+  google.protobuf.Timestamp scheduled_at = 6;
+}
+message ScheduleRideResponse { Ride ride = 1; }
+
+message AcceptRideRequest {
+  string ride_id = 1;
+  string driver_id = 2;
+}
+message AcceptRideResponse { Ride ride = 1; }
+
+message RejectRideRequest {
+  string ride_id = 1;
+  string driver_id = 2;
+  string reason = 3;
+}
+message RejectRideResponse { bool rejected = 1; }
+
+message UpdateRideStatusRequest {
+  string ride_id = 1;
+  string status = 2;
+  string reason = 3;
+}
+message UpdateRideStatusResponse { Ride ride = 1; }
+
+message CancelRideRequest {
+  string ride_id = 1;
+  string reason = 2;
+}
+message CancelRideResponse { Ride ride = 1; }
+
+message CompleteRideRequest { string ride_id = 1; }
+message CompleteRideResponse { Ride ride = 1; }
+
+message RateRideRequest {
+  string ride_id = 1;
+  string user_id = 2;
+  int32 rating = 3;
+  string comment = 4;
+}
+message RateRideResponse {
+  string ride_id = 1;
+  int32 rating = 2;
+}

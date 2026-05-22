@@ -4,10 +4,15 @@ export type ApiResult = {
   body: unknown;
 };
 
+export const authHeaders = (token = ""): Record<string, string> =>
+  token ? { Authorization: `Bearer ${token}` } : {};
+
 export async function api(path: string, init: RequestInit = {}, token = ""): Promise<ApiResult> {
   const headers = new Headers(init.headers);
   if (init.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
-  if (token) headers.set("Authorization", `Bearer ${token}`);
+  for (const [key, value] of Object.entries(authHeaders(token))) {
+    headers.set(key, value);
+  }
 
   const response = await fetch(path, { ...init, headers });
   const text = await response.text();

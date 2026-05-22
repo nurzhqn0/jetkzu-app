@@ -1,0 +1,67 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "HTTP Requests (rate)",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "sum(rate(jetkzu_http_requests_total[1m]))", "refId": "A"}
+      ],
+      "gridPos": {"h": 6, "w": 8, "x": 0, "y": 0}
+    },
+    {
+      "type": "stat",
+      "title": "gRPC Requests (rate)",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "sum(rate(jetkzu_grpc_requests_total[1m]))", "refId": "A"}
+      ],
+      "gridPos": {"h": 6, "w": 8, "x": 8, "y": 0}
+    },
+    {
+      "type": "stat",
+      "title": "NATS Events",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "sum(rate(jetkzu_nats_events_total[1m]))", "refId": "A"}
+      ],
+      "gridPos": {"h": 6, "w": 8, "x": 16, "y": 0}
+    },
+    {
+      "type": "timeseries",
+      "title": "gRPC latency p95",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "histogram_quantile(0.95, sum(rate(jetkzu_grpc_latency_seconds_bucket[5m])) by (le, service))", "refId": "A"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6}
+    },
+    {
+      "type": "timeseries",
+      "title": "gRPC requests by service",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "sum(rate(jetkzu_grpc_requests_total[1m])) by (service)", "refId": "A"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6}
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": ["jetkzu"],
+  "templating": {"list": []},
+  "time": {"from": "now-30m", "to": "now"},
+  "timepicker": {},
+  "timezone": "",
+  "title": "JetKZu Overview",
+  "uid": "jetkzu-overview",
+  "version": 1,
+  "weekStart": ""
+}
