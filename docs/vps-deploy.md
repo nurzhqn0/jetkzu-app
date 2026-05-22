@@ -1,12 +1,12 @@
 # VPS Deployment
 
-This deploys JetKZu with Docker Compose on a single VPS. The public entrypoint is the frontend Nginx container; it proxies `/api` and `/health` to the internal API Gateway.
+This deploys JetKZu with Docker Compose on a single VPS. Host Nginx terminates HTTPS for `jetkzu.nurzhqn.com` and proxies to the frontend container on `127.0.0.1:3000`; the frontend container proxies `/api` and `/health` to the internal API Gateway.
 
 ## Server Prerequisites
 
 - Ubuntu 22.04/24.04 or another Linux VPS with Docker Engine and Docker Compose v2.
 - Open inbound TCP `80` on the VPS firewall.
-- Open inbound TCP `443` only if you add a host-level TLS reverse proxy.
+- Open inbound TCP `443` for HTTPS.
 - Keep Postgres, Redis, NATS, Prometheus, Grafana, and service gRPC ports closed to the public internet.
 
 ## First Deploy
@@ -19,7 +19,7 @@ nano .env.vps
 docker compose --env-file .env.vps -f docker-compose.vps.yml up -d --build
 docker compose --env-file .env.vps -f docker-compose.vps.yml ps
 curl -fsS http://127.0.0.1:8080/health
-curl -fsS http://127.0.0.1/health
+curl -fsS http://127.0.0.1:3000/health
 ```
 
 Generate strong secrets before editing `.env.vps`:
@@ -41,43 +41,44 @@ docker compose --env-file .env.vps -f docker-compose.vps.yml logs -f --tail=200
 
 The `migrate` service runs automatically before application services start.
 
-## Public HTTP Mode
+## Nginx HTTPS For jetkzu.nurzhqn.com
 
-The default `.env.vps.example` exposes the frontend directly on `0.0.0.0:80`:
-
-```dotenv
-FRONTEND_BIND_ADDR=0.0.0.0
-FRONTEND_HOST_PORT=80
-```
-
-Use this for quick VPS deployment by IP address or when TLS is terminated by an external load balancer.
-
-## Host Nginx + HTTPS Mode
-
-If you want TLS on the VPS itself, bind the frontend only to localhost:
+The default `.env.vps.example` binds the frontend to localhost so host Nginx can terminate HTTPS:
 
 ```dotenv
 FRONTEND_BIND_ADDR=127.0.0.1
 FRONTEND_HOST_PORT=3000
 ```
 
-Then configure host Nginx or Caddy to proxy your domain to `http://127.0.0.1:3000`. With Nginx, the minimal server block is:
+Install Nginx and Certbot:
 
-```nginx
-server {
-  server_name example.com;
-
-  location / {
-    proxy_pass http://127.0.0.1:3000;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-  }
-}
+```bash
+sudo apt update
+sudo apt install -y nginx certbot
 ```
 
-After that, issue certificates with Certbot or your preferred TLS tooling.
+Install the temporary HTTP config and request the certificate:
+
+```bash
+sudo mkdir -p /var/www/letsencrypt
+sudo cp deploy/nginx/jetkzu.nurzhqn.com.bootstrap.conf /etc/nginx/sites-available/jetkzu.nurzhqn.com
+sudo ln -sf /etc/nginx/sites-available/jetkzu.nurzhqn.com /etc/nginx/sites-enabled/jetkzu.nurzhqn.com
+sudo nginx -t
+sudo systemctl reload nginx
+sudo certbot certonly --webroot -w /var/www/letsencrypt -d jetkzu.nurzhqn.com
+```
+
+Replace it with the HTTPS config:
+
+```bash
+sudo cp deploy/nginx/jetkzu.nurzhqn.com.conf /etc/nginx/sites-available/jetkzu.nurzhqn.com
+sudo nginx -t
+sudo systemctl reload nginx
+sudo certbot renew --dry-run
+curl -I https://jetkzu.nurzhqn.com/health
+```
+
+Make sure the DNS `A` record for `jetkzu.nurzhqn.com` points to the VPS before running Certbot.
 
 ## Operations
 
