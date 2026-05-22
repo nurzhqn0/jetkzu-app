@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package notification.v1;
+
+option go_package = "github.com/jetkzu/jetkzu/gen/go/notification/v1;notificationv1";
+
+import "google/protobuf/timestamp.proto";
+
+service NotificationService {
+  rpc SendEmailNotification(SendEmailNotificationRequest) returns (SendEmailNotificationResponse);
+  rpc SendRideReceipt(SendRideReceiptRequest) returns (SendRideReceiptResponse);
+  rpc GetNotificationHistory(GetNotificationHistoryRequest) returns (GetNotificationHistoryResponse);
+  rpc ListUnreadNotifications(ListUnreadNotificationsRequest) returns (ListUnreadNotificationsResponse);
+  rpc CountUnreadNotifications(CountUnreadNotificationsRequest) returns (CountUnreadNotificationsResponse);
+  rpc MarkNotificationAsRead(MarkNotificationAsReadRequest) returns (MarkNotificationAsReadResponse);
+  rpc MarkAllNotificationsAsRead(MarkAllNotificationsAsReadRequest) returns (MarkAllNotificationsAsReadResponse);
+  rpc ResendNotification(ResendNotificationRequest) returns (ResendNotificationResponse);
+  rpc DeleteNotification(DeleteNotificationRequest) returns (DeleteNotificationResponse);
+}
+
+message Notification {
+  string id = 1;
+  string user_id = 2;
+  string channel = 3; // email
+  string subject = 4;
+  string body = 5;
+  string status = 6; // queued | sent | mock_sent | failed | read
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp sent_at = 8;
+}
+
+message SendEmailNotificationRequest {
+  string user_id = 1;
+  string to = 2;
+  string subject = 3;
+  string body = 4;
+}
+message SendEmailNotificationResponse { Notification notification = 1; }
+
+message SendRideReceiptRequest {
+  string user_id = 1;
+  string to = 2;
+  string ride_id = 3;
+  string payment_id = 4;
+  double amount = 5;
+}
+message SendRideReceiptResponse { Notification notification = 1; }
+
+message GetNotificationHistoryRequest {
+  string user_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+message GetNotificationHistoryResponse { repeated Notification notifications = 1; }
+
+message ListUnreadNotificationsRequest {
+  string user_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+message ListUnreadNotificationsResponse { repeated Notification notifications = 1; }
+
+message CountUnreadNotificationsRequest { string user_id = 1; }
+message CountUnreadNotificationsResponse { int32 count = 1; }
+
+message MarkNotificationAsReadRequest { string notification_id = 1; }
+message MarkNotificationAsReadResponse { Notification notification = 1; }
+
+message MarkAllNotificationsAsReadRequest { string user_id = 1; }
+message MarkAllNotificationsAsReadResponse { int32 updated = 1; }
+
+message ResendNotificationRequest { string notification_id = 1; }
+message ResendNotificationResponse { Notification notification = 1; }
+
+message DeleteNotificationRequest { string notification_id = 1; }
+message DeleteNotificationResponse { bool deleted = 1; }

@@ -1,0 +1,11 @@
+.git
+.github
+.vscode
+.idea
+node_modules
+web/node_modules
+web/dist
+web/
+**/*.md
+docs/
+tests/integration/data
